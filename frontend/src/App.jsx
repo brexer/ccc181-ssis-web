@@ -1,22 +1,21 @@
-function App() {
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/layout/layout";
+import Dashboard from "./pages/dashboard";
+import Students from "./pages/students";
+import Colleges from "./pages/colleges";
+import Programs from "./pages/programs";
 
+function App() {
   return (
-    <>
-      <h1 class="text-3xl font-bold underline">
-        Hello World!
-      </h1>
-      <div>
-        <button className="btn btn-neutral">Neutral</button>
-        <button className="btn btn-primary">Primary</button>
-        <button className="btn btn-secondary">Secondary</button>
-        <button className="btn btn-accent">Accent</button>
-        <button className="btn btn-info">Info</button>
-        <button className="btn btn-success">Success</button>
-        <button className="btn btn-warning">Warning</button>
-        <button className="btn btn-error">Error</button>
-      </div>
-    </>
-  )
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/students" element={<Students />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
