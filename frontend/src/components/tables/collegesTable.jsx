@@ -1,0 +1,30 @@
+export default CollegesTable;
+function CollegesTable({ colleges }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th>College Code</th>
+            <th>College Name</th>
+            <th>Number of Programs</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {colleges.map((s) => (
+            <tr key={s.id}>
+              <td>{s.collegecode}</td>
+              <td>{s.collegename}</td>
+              <td>{s.numberofprograms}</td>
+              <td>
+                <button className="btn btn-xs btn-info mr-1">Edit</button>
+                <button className="btn btn-xs btn-error">Delete</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
