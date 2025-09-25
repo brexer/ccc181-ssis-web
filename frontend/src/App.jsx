@@ -8,12 +8,14 @@ import Programs from "./pages/programs";
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/students" element={<Students />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
+          <Route path="programs" element={<Programs />} />
+          <Route path="colleges" element={<Colleges />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 }
