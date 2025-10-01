@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
+import Sidebar from "./sidebar";
 import { useState } from "react";
 
 export default function Layout() {
@@ -6,37 +7,7 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen bg-base-200">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          isOpen ? "w-64" : "w-16"
-        } bg-base-300 transition-all duration-300 flex flex-col`}
-      >
-        <button
-          className="btn btn-ghost btn-sm m-2"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? "«" : "»"}
-        </button>
-
-        <nav className="flex-1">
-          <ul className="menu p-2">
-            <li>
-              <Link to="/"> {isOpen && "Dashboard"}</Link>
-            </li>
-            <li>
-              <Link to="/students"> {isOpen && "Students"}</Link>
-            </li>
-            <li>
-              <Link to="/programs"> {isOpen && "Programs"}</Link>
-            </li>
-            <li>
-              <Link to="/colleges"> {isOpen && "Colleges"}</Link>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       {/* Main Content */}
       <main className="flex-1 flex flex-col">
         {/* Top Navbar */}
