@@ -13,7 +13,7 @@ function ProgramsTable({ programs }) {
         </thead>
         <tbody>
           {programs.map((s) => (
-            <tr key={s.id}>
+            <tr key={s.programcode}>
               <td>{s.programcode}</td>
               <td>{s.programname}</td>
               <td>{s.collegecode}</td>

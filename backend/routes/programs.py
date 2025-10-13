@@ -8,7 +8,7 @@ def get_programs():
     try:
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute("SELECT code, name, college_code FROM programs ORDER BY code;")
+                cursor.execute("SELECT code as programcode, name as programname, college_code as collegecode FROM programs ORDER BY code;")
                 rows = cursor.fetchall()
         return jsonify(rows), 200
     except Exception as e:

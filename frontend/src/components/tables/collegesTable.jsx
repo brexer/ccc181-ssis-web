@@ -13,7 +13,7 @@ function CollegesTable({ colleges }) {
         </thead>
         <tbody>
           {colleges.map((s) => (
-            <tr key={s.id}>
+            <tr key={s.collegecode}>
               <td>{s.collegecode}</td>
               <td>{s.collegename}</td>
               <td>{s.numberofprograms}</td>

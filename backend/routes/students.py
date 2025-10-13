@@ -8,7 +8,7 @@ def get_students():
     try:
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute("SELECT id, firstname, lastname, program_code, year, gender FROM students ORDER BY id;")
+                cursor.execute("SELECT id, firstname, lastname, program_code as course, year, gender FROM students ORDER BY id;")
                 rows = cursor.fetchall()
             return jsonify(rows), 200
     except Exception as e:
