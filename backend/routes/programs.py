@@ -22,8 +22,8 @@ def add_program():
         name = data.get("name")
         college_code = data.get("college_code")
 
-        if not code or not name:
-            return jsonify({"error": "Both code and name are required"}), 400
+        if not code or not name or not college_code:
+            return jsonify({"error": "All fields required"}), 400
         
         with get_connection() as conn:
             with conn.cursor() as cursor:
