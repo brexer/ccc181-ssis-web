@@ -16,8 +16,7 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    add_testers()
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=5000)
 
 
     
