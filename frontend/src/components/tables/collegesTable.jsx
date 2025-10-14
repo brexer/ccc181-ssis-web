@@ -1,5 +1,5 @@
 export default CollegesTable;
-function CollegesTable({ colleges }) {
+function CollegesTable({ colleges, onEdit, onDelete }) {
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra w-full">
@@ -18,8 +18,18 @@ function CollegesTable({ colleges }) {
               <td>{s.collegename}</td>
               <td>{s.numberofprograms}</td>
               <td>
-                <button className="btn btn-xs btn-info mr-1">Edit</button>
-                <button className="btn btn-xs btn-error">Delete</button>
+                <button 
+                  className="btn btn-xs btn-info mr-1"
+                  onClick={() => onEdit(s.collegecode)}
+                >
+                  Edit
+                </button>
+                <button 
+                  className="btn btn-xs btn-error"
+                  onClick={() => onDelete(s.collegecode)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
