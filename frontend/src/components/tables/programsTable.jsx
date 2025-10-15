@@ -1,5 +1,4 @@
-export default ProgramsTable;
-function ProgramsTable({ programs }) {
+export default function ProgramsTable({ programs, onEdit, onDelete }) {
   return (
     <div className="overflow-x-auto">
       <table className="table table-zebra w-full">
@@ -18,8 +17,18 @@ function ProgramsTable({ programs }) {
               <td>{s.programname}</td>
               <td>{s.collegecode}</td>
               <td>
-                <button className="btn btn-xs btn-info mr-1">Edit</button>
-                <button className="btn btn-xs btn-error">Delete</button>
+                <button 
+                  className="btn btn-xs btn-info mr-1"
+                  onClick={() => onEdit(s.programcode)}
+                >
+                  Edit
+                </button>
+                <button 
+                  className="btn btn-xs btn-error"
+                  onClick={() => onDelete(s.programcode)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
