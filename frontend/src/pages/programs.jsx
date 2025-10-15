@@ -12,8 +12,6 @@ export default function ProgramsPage() {
   const [editingProgram, setEditingProgram] = useState(null);
   const [formData, setFormData] = useState({ code: '', name: '', collegeCode: '' });
 
-  console.log(colleges);
-
   useEffect(() => {
     fetchPrograms();
     fetchColleges();
@@ -79,7 +77,7 @@ export default function ProgramsPage() {
     setShowModal(false);
     setEditingProgram(null);
     setFormData({ code: '', name: '', collegeCode: '' });
-  };
+  }; 
 
   const handleSaveProgram = async (data) => {
     try {
