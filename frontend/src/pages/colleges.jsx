@@ -9,11 +9,54 @@ export default function CollegesPage() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editingCollege, setEditingCollege] = useState(null);
+  const [filteredColleges, setFilteredColleges] = useState([])
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortField, setSortField] = useState('collegecode');
+  const [sortOrder, setSortOrder] = useState('asc');
   const [formData, setFormData] = useState({ code: '', name: '' });
 
   useEffect(() => {
     fetchColleges();
   }, []);
+
+  useEffect(() => {
+    let result = [...colleges];
+
+    // search
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(college => 
+        college.collegecode.toLowerCase().includes(query) ||
+        college.collegename.toLowerCase().includes(query)
+      );
+    }
+
+    // sort
+    result.sort((a, b) => {
+      let aValue = a[sortField];
+      let bValue = b[sortField];
+
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setFilteredColleges(result);
+  }, [colleges, searchQuery, sortField, sortOrder]);
+
+  const handleSort = (field) => {
+  if (sortField === field) {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  } else {
+    setSortField(field);
+    setSortOrder('asc');
+  }
+};
 
   const fetchColleges = async () => {
     setLoading(true);
@@ -121,10 +164,28 @@ export default function CollegesPage() {
         </div>
       )}
 
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by college code or name..."
+          className="input input-bordered w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <p className="text-sm text-gray-600 mt-2">
+            Found {filteredColleges.length} result(s)
+          </p>
+        )}
+      </div>
+
       <CollegesTable
-        colleges={colleges}
+        colleges={filteredColleges}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onSort={handleSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
       />
 
       {showModal && (
