@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CollegesTable from "../components/tables/collegesTable";
 import CollegeModal from "../components/modals/collegeModal";
+import Pagination from "../components/pagination";
 import * as api from '../services/api'
 
 export default function CollegesPage() {
@@ -14,6 +15,8 @@ export default function CollegesPage() {
   const [sortField, setSortField] = useState('collegecode');
   const [sortOrder, setSortOrder] = useState('asc');
   const [formData, setFormData] = useState({ code: '', name: '' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     fetchColleges();
@@ -47,6 +50,7 @@ export default function CollegesPage() {
     });
 
     setFilteredColleges(result);
+    setCurrentPage(1);
   }, [colleges, searchQuery, sortField, sortOrder]);
 
   const handleSort = (field) => {
@@ -56,6 +60,20 @@ export default function CollegesPage() {
     setSortField(field);
     setSortOrder('asc');
   }
+};
+
+  const totalItems = filteredColleges.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentColleges = filteredColleges.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const handleItemsPerPageChange = (value) => {
+  setItemsPerPage(value);
+  setCurrentPage(1); // reset to first page when changing page size
 };
 
   const fetchColleges = async () => {
@@ -180,12 +198,21 @@ export default function CollegesPage() {
       </div>
 
       <CollegesTable
-        colleges={filteredColleges}
+        colleges={currentColleges}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSort={handleSort}
         sortField={sortField}
         sortOrder={sortOrder}
+      />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        totalItems={totalItems}
       />
 
       {showModal && (
