@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from database_client import get_connection
+from routes.auth import token_required
 
 students_bp = Blueprint("students", __name__)
 
@@ -13,6 +14,7 @@ reverseYearToString = {v.lower(): k for k, v in YearToString.items()}
 
 
 @students_bp.route("/students", methods=["GET"])
+@token_required
 def get_students():
     try:
         with get_connection() as conn:
@@ -37,6 +39,7 @@ def get_students():
 
 
 @students_bp.route("/students", methods=["POST"])
+@token_required
 def add_student():
     try:
         data = request.get_json()
@@ -89,6 +92,7 @@ def add_student():
 
 
 @students_bp.route("/students/<id>", methods=["PUT"])
+@token_required
 def update_student(id):
     try:
         data = request.get_json()
@@ -153,6 +157,7 @@ def update_student(id):
 
 
 @students_bp.route("/students/<id>", methods=["DELETE"])
+@token_required
 def delete_student(id):
     try:
         with get_connection() as conn:

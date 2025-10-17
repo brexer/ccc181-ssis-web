@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from database_client import get_connection
+from routes.auth import token_required
 
 programs_bp = Blueprint("programs", __name__)
 
 @programs_bp.route("/programs", methods = ["GET"])
+@token_required
 def get_programs():
     try:
         with get_connection() as conn:
@@ -15,6 +17,7 @@ def get_programs():
         return jsonify({"error": str(e)}), 500
     
 @programs_bp.route("/programs", methods =["POST"])
+@token_required
 def add_program():
     try:
         data = request.get_json()
@@ -51,6 +54,7 @@ def add_program():
         return jsonify({"error": str(e)}), 500
     
 @programs_bp.route("/programs/<code>", methods=["DELETE"])
+@token_required
 def delete_program(code):
     try:
         with get_connection() as conn:
@@ -65,6 +69,7 @@ def delete_program(code):
         return jsonify({"error": str(e)}), 500
     
 @programs_bp.route("/programs/<code>", methods=["PUT"])
+@token_required
 def update_program(code):
     try:
         data = request.get_json()

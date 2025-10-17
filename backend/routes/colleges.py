@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from database_client import get_connection
+from routes.auth  import token_required
 
 colleges_bp = Blueprint("colleges", __name__)
 
 @colleges_bp.route("/colleges", methods=["GET"])
+@token_required
 def get_colleges():
     try:
         with get_connection() as conn:
@@ -16,6 +18,7 @@ def get_colleges():
 
 
 @colleges_bp.route("/colleges", methods=["POST"])
+@token_required
 def add_college():
     try:
         data = request.get_json()
@@ -47,6 +50,7 @@ def add_college():
         return jsonify({"error": str(e)}), 500
 
 @colleges_bp.route("/colleges/<code>", methods=["PUT"])
+@token_required
 def update_college(code):
     try:
         data = request.get_json()
@@ -88,6 +92,7 @@ def update_college(code):
 
 
 @colleges_bp.route("/colleges/<code>", methods=["DELETE"])
+@token_required
 def delete_college(code):
     try:
         with get_connection() as conn:

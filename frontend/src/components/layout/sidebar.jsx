@@ -16,9 +16,6 @@ export default function Sidebar({ isOpen, setIsOpen }){
         <nav className="flex-1">
           <ul className="menu p-2">
             <li>
-              <Link to="/"> {isOpen && "Dashboard"}</Link>
-            </li>
-            <li>
               <Link to="/students"> {isOpen && "Students"}</Link>
             </li>
             <li>
