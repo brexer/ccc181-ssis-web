@@ -22,7 +22,6 @@ function CollegesTable({ colleges, onEdit, onDelete, onSort, sortField, sortOrde
           <tr>
             <SortableHeader field="collegecode" label="College Code" />
             <SortableHeader field="collegename" label="College Name" />
-            <SortableHeader field="numberofprograms" label="Number of Programs" />
             <th>Actions</th>
           </tr>
         </thead>
@@ -38,7 +37,6 @@ function CollegesTable({ colleges, onEdit, onDelete, onSort, sortField, sortOrde
               <tr key={college.collegecode}>
                 <td>{college.collegecode}</td>
                 <td>{college.collegename}</td>
-                <td>{college.numberofprograms}</td>
                 <td>
                   <button 
                     className="btn btn-xs btn-info mr-1"

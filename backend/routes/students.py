@@ -3,17 +3,39 @@ from database_client import get_connection
 
 students_bp = Blueprint("students", __name__)
 
+YearToString = {
+    1: "First",
+    2: "Second",
+    3: "Third",
+    4: "Fourth"
+}
+reverseYearToString = {v.lower(): k for k, v in YearToString.items()}
+
+
 @students_bp.route("/students", methods=["GET"])
 def get_students():
     try:
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute("SELECT id, firstname, lastname, program_code as course, year, gender FROM students ORDER BY id;")
+                cursor.execute("""
+                    SELECT id, firstname, lastname, program_code AS course, year, gender
+                    FROM students
+                    ORDER BY id;
+                """)
                 rows = cursor.fetchall()
-            return jsonify(rows), 200
+
+        formatted_rows = []
+        for row in rows:
+            student = dict(row)
+            year_num = student.get("year")
+            student["year"] = YearToString.get(year_num, str(year_num))
+            formatted_rows.append(student)
+
+        return jsonify(formatted_rows), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @students_bp.route("/students", methods=["POST"])
 def add_student():
     try:
@@ -25,23 +47,27 @@ def add_student():
         year = data.get("year")
         gender = data.get("gender")
 
-        # Validate required fields
+        if isinstance(year, str):
+            year = reverseYearToString.get(year.lower(), year)
+
         if not all([id, firstname, lastname, program_code, year, gender]):
             return jsonify({"error": "All fields are required"}), 400
 
+        try:
+            year = int(year)
+        except ValueError:
+            return jsonify({"error": "Year must be a number (1–4)"}), 400
+
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                # Check duplicate student ID
                 cursor.execute("SELECT 1 FROM students WHERE id = %s;", (id,))
                 if cursor.fetchone():
                     return jsonify({"error": f"Student ID '{id}' already exists"}), 400
 
-                # Validate program_code exists in programs table
                 cursor.execute("SELECT 1 FROM programs WHERE code = %s;", (program_code,))
                 if not cursor.fetchone():
                     return jsonify({"error": f"Program code '{program_code}' does not exist"}), 400
 
-                # Insert student
                 cursor.execute(
                     """
                     INSERT INTO students (id, firstname, lastname, program_code, year, gender)
@@ -52,11 +78,16 @@ def add_student():
                 )
                 new_student = cursor.fetchone()
             conn.commit()
+
+        if new_student and isinstance(new_student, dict):
+            new_student["year"] = YearToString.get(new_student["year"], new_student["year"])
+
         return jsonify(new_student), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @students_bp.route("/students/<id>", methods=["PUT"])
 def update_student(id):
     try:
@@ -68,30 +99,33 @@ def update_student(id):
         year = data.get("year")
         gender = data.get("gender")
 
-        # Validate required fields
+        if isinstance(year, str):
+            year = reverseYearToString.get(year.lower(), year)
+
         if not all([new_id, firstname, lastname, program_code, year, gender]):
             return jsonify({"error": "All fields are required"}), 400
 
+        try:
+            year = int(year)
+        except ValueError:
+            return jsonify({"error": "Year must be a number (1–4)"}), 400
+
         with get_connection() as conn:
             with conn.cursor() as cursor:
-                # Check if student exists
                 cursor.execute("SELECT * FROM students WHERE id = %s;", (id,))
                 existing = cursor.fetchone()
                 if not existing:
                     return jsonify({"error": "Student not found"}), 404
 
-                # Check for duplicate new ID if changed
                 if new_id != id:
                     cursor.execute("SELECT 1 FROM students WHERE id = %s;", (new_id,))
                     if cursor.fetchone():
                         return jsonify({"error": f"Student ID '{new_id}' already exists"}), 400
 
-                # Validate program_code exists
                 cursor.execute("SELECT 1 FROM programs WHERE code = %s;", (program_code,))
                 if not cursor.fetchone():
                     return jsonify({"error": f"Program code '{program_code}' does not exist"}), 400
 
-                # Perform update
                 cursor.execute(
                     """
                     UPDATE students
@@ -109,11 +143,15 @@ def update_student(id):
                 updated_student = cursor.fetchone()
             conn.commit()
 
+        if updated_student and isinstance(updated_student, dict):
+            updated_student["year"] = YearToString.get(updated_student["year"], updated_student["year"])
+
         return jsonify(updated_student), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+
 @students_bp.route("/students/<id>", methods=["DELETE"])
 def delete_student(id):
     try:
